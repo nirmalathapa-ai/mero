@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Registration</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        body {
+            height: 100vh;
+            overflow: hidden;
+            background: Beige;
+            font-family: 'cursive';
+        }
+
+        .container {
+            position: relative;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #ffa69e, #861657);
+        }
+
+        .form-wrapper {
+            position: absolute;
+            width: 100%;
+            max-width: 28rem;
+            background-color: beige;
+            border-radius: 1.5rem;
+            box-shadow: 0px 0px 0px 0.25rem black, rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            padding: 2rem;
+            display: none;
+            border: 0.125rem solid #861657;
+        }
+
+        .form-wrapper.active {
+            display: block;
+        }
+
+        .input-group {
+            position: relative;
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        .input-group i {
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            transform: translateY(-50%);
+            font-size: 1.4rem;
+            color: #999;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem 3rem;
+            font-size: 1rem;
+            background-color: #f1f1f1;
+            border-radius: .5rem;
+            border: 0.125rem solid black;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border: 0.125rem solid #861657;
+        }
+
+        .form button {
+            cursor: pointer;
+            width: 100%;
+            padding: .6rem 0;
+            border-radius: .5rem;
+            border: none;
+            background-color: #861657;
+            color: #fff;
+            font-size: 1.2rem;
+            outline: none;
+        }
+
+        .form p {
+            margin: 1rem 0;
+            font-size: .9rem;
+        }
+
+        .pointer {
+            cursor: pointer;
+            color: #861657;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(50%);
+            }
+        }
+
+        @keyframes moveLeft {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- SIGN IN FORM -->
+        <div id="sign-in-form" class="form-wrapper active">
+            <form class="form sign-in" action="connect.php" method="POST" onsubmit="handleSignIn(event)">
+                <div class="input-group">
+                    <i class='bx bxs-user'></i>
+                    <input type="text" id="signin-email" name="email" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <i class='bx bxs-lock-alt'></i>
+                    <input type="password" id="signin-password" name="password" placeholder="Password" required>
+                </div>
+                <div class="g-recaptcha" data-sitekey="6LeLnvIpAAAAANcM7aBQIZ3ieFt7x6_ue0cGI2Jm"></div>
+                <button type="submit" name="signin">Sign in</button>
+                <p id="lockout-message"></p>
+                <p>
+                    <span>Don't have an account?</span>
+                    <b onclick="toggleForm()" class="pointer">Sign up here</b>
+                </p>
+                <p>
+                    <b onclick="showForgotPasswordModal()" class="pointer">Forgot Password?</b>
+                </p>
+            </form>
+        </div>
+
+        <!-- SIGN UP FORM -->
+        <div id="sign-up-form" class="form-wrapper">
+            <form class="form sign-up" action="connect.php" method="POST" onsubmit="onSubmit(event)">
+                <div class="input-group">
+                    <i class='bx bxs-user'></i>
+                    <input type="text" id="signup-email" name="email" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <i class='bx bxs-lock-alt'></i>
+                    <input type="password" id="signup-password" name="password" placeholder="Password" required>
+                </div>
+                
+                <button type="submit" name="signup">Sign up</button>
+                <p>
+                    <span>Already have an account?</span>
+                    <b onclick="toggleForm()" class="pointer">Sign in here</b>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Images -->
+    <img src="login.avif" alt="Image 1" class="image1">
+    <img src="login2.png" alt="Image 2" class="image2">
+
+    <!-- Forgot Password Modal -->
+    <div id="forgot-password-modal" class="modal">
+        <div class="modal-content">
+            <form class="form" action="connect.php" method="POST">
+                <div class="input-group">
+                    <i class='bx bx-mail-send'></i>
+                    <input type="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <button type="submit">Send OTP</button>
+                <p>
+                    <b onclick="hideForgotPasswordModal()" class="pointer">Close</b>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        const signInForm = document.getElementById('sign-in-form');
+        const signUpForm = document.getElementById('sign-up-form');
+        const forgotPasswordModal = document.getElementById('forgot-password-modal');
+        const rememberMeCheckbox = document.getElementById('rememberMeCheckbox');
+        const rememberMeSignupCheckbox = document.getElementById('rememberMeSignupCheckbox');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load remembered email
+            const rememberedEmail = localStorage.getItem('rememberedEmail');
+            if (rememberedEmail) {
+                document.getElementById('signin-email').value = rememberedEmail;
+                rememberMeCheckbox.checked = true;
+            }
+        });
+
+        function toggleForm() {
+            signInForm.classList.toggle('active');
+            signUpForm.classList.toggle('active');
+        }
+
+        function showForgotPasswordModal() {
+            forgotPasswordModal.classList.add('active');
+        }
+
+        function hideForgotPasswordModal() {
+            forgotPasswordModal.classList.remove('active');
+        }
+
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+            });
+        });
+
+        function handleSignIn(event) {
+            if (grecaptcha.getResponse() === '') {
+                alert('Please complete the CAPTCHA');
+                event.preventDefault();
+                return;
+            }
+
+            failedAttempts++;
+
+            if (failedAttempts === 3) {
+                document.getElementById('lockout-message').textContent = 'You have reached the maximum number of failed attempts. Please wait for 20 seconds before trying again.';
+                document.querySelector('#sign-in-form button[type="submit"]').disabled = true;
+                startTimer(20);
+            }
+
+            if (!rememberMeCheckbox.checked) {
+                localStorage.removeItem('rememberedEmail');
+            }
+        }
+
+        function onSubmit(event) {
+            const passwordInput = document.getElementById('signup-password');
+            if (!validatePassword(passwordInput)) {
+                alert('Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character.');
+                event.preventDefault();
+            }
+
+            if (rememberMeSignupCheckbox.checked) {
+                const email = document.getElementById('signup-email').value;
+                localStorage.setItem('rememberedEmail', email);
+            } else {
+                localStorage.removeItem('rememberedEmail');
+            }
+        }
+
+        function validatePassword(input) {
+            const password = input.value;
+            const minLength = 8;
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasLowercase = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecialChar = /[!@#$%^&*]/.test(password);
+
+            if (password.length >= minLength && hasUppercase && hasLowercase && hasNumber && hasSpecialChar) {
+                input.style.borderColor = 'green';
+                return true;
+            } else {
+                input.style.borderColor = 'red';
+                return false;
+            }
+        }
+
+        function handleRememberMe() {
+            if (!rememberMeCheckbox.checked && !rememberMeSignupCheckbox.checked) {
+                localStorage.removeItem('rememberedEmail');
+            }
+        }
+
+        let failedAttempts = 0;
+        let countdownTimer;
+
+        function startTimer(duration) {
+            let timer = duration;
+            countdownTimer = setInterval(function () {
+                if (timer <= 0) {
+                    clearInterval(countdownTimer);
+                    resetLockout();
+                } else {
+                    document.getElementById('lockout-message').textContent = `Please wait for ${timer} seconds before trying again.`;
+                    timer--;
+                }
+            }, 1000);
+        }
+
+        function resetLockout() {
+            failedAttempts = 0;
+            clearInterval(countdownTimer);
+            document.getElementById('lockout-message').textContent = '';
+            document.querySelector('#sign-in-form button[type="submit"]').disabled = false;
+        }
+
+        // Disable right click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+ 
+
+    </script>
+</body>
+</html>
