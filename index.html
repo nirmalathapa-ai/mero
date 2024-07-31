@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INDEX.HTML</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan&family=Source+Sans+Pro&display=swap">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+   
+    
+
+    <style>
+        /* General styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier';
+        }
+
+        body {
+            background-color: Beige ;            
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: Beige and Dark Grey; 
+            padding: 10px 20px;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            color: black;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px;
+            display: block;
+        }
+
+        .nav-links .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .nav-links a:hover {
+            color: rgb(222, 164, 18);
+            /* Change this color to your desired hover color */
+        }
+        
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #444;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            list-style: none;
+            padding: 0;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #555;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-buttons .login {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: transparent;
+            transition: background-color 0.3s;
+            color: white;
+        }
+
+        .auth-buttons .login:hover {
+            background-color: #e39414;
+        }
+
+        /* Carousel container */
+        .carousel {
+            position: relative;
+            max-width: 100%;
+            height: 654px;
+            /* Set desired height for the container */
+            margin: auto;
+            overflow: hidden;
+        }
+
+        /* Carousel slides */
+        .carousel-slide {
+            display: none;
+            height: 80%;
+            /* Make slide height 100% of the container */
+        }
+
+        /* Carousel images */
+        .carousel-slide img {
+            padding: 0;
+            width: 50%;
+            height: 150px; /* Adjust this value as needed */
+            border: 10px solid burlywood;
+            border-radius: 4px;
+            padding: 5px;
+            object-fit: cover;
+            /* Cover the entire container while maintaining aspect ratio */
+        }
+        
+        
+
+        .carousel-.slide-:hover {
+            box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+          }
+
+        
+        /* Caption text */
+        .text {
+            color: #f2f2f2;
+            font-family: 'Source Sans Pro';
+            font-size: 15px;
+            padding: 8px 50px;
+            position: absolute;
+            top: 50%;
+            /* Position caption in the vertical center */
+            left: 10px;
+            /* Position caption near the left side */
+            transform: translateY(-50%);
+            /* Center the caption vertically */
+            width: 55%;
+            /* Limit the width to half of the container */
+            text-align: left;
+            /* Align the text to the left */
+
+            border-radius: 5px;
+            /* Optional: add border-radius for better look */
+        }
+
+        .hire-me-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #2e323a;
+            color: black;
+            border: solid white, 3px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 26px;
+            transition: background-color 0.3s;
+        }
+
+        .hire-me-btn:hover {
+            background-color: #91a09ed2;
+            border-color: #91a09ed2;
+        }
+
+        .carousel-slide .text.opposite {
+            right: 50px;
+            left: auto;
+        }
+
+        /* Dots/bullets/indicators container */
+        .dots-container {
+            position: absolute;
+            bottom: 10px;
+            /* Position dots 10px above the bottom */
+            width: 100%;
+            text-align: center;
+            z-index: 1;
+            /* Ensure dots are above images */
+        }
+
+        /* Dots/bullets/indicators */
+        .dot {
+            cursor: pointer;
+            height: 15px;
+            width: 15px;
+            margin: 0 2px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+
+        .active,
+        .dot:hover {
+            background-color: #717171;
+        }
+
+        /* Fading animation */
+        .fade {
+            animation-name: fade;
+            animation-duration: 1.5s;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: .4
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                text-align: left;
+                width: 100%;
+            }
+
+            .nav-links li {
+                width: 100%;
+            }
+
+            .auth-buttons {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .auth-buttons button {
+                width: 100%;
+                text-align: left;
+            }
+
+            .carousel {
+                height: 300px;
+                /* Adjust height for smaller screens */
+            }
+
+            .text {
+                font-size: 20px;
+            }
+
+            #map {
+                height: 300px;
+                /* Adjust height for smaller screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .carousel {
+                height: 200px;
+                /* Adjust height for even smaller screens */
+            }
+
+            .text {
+                font-size: 10px;
+            }
+
+            #map {
+                height: 200px;
+                /* Adjust height for smaller screens */
+            }
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            /* Ensure items wrap on smaller screens */
+            margin-bottom: 20px;
+            /* Add space below the footer menus */
+        }
+
+        .footer-links,
+        .footer-icons {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+            /* Adjust the gap between items */
+        }
+
+        .footer-links a,
+        .footer-icons a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            /* Center align icon and text */
+        }
+
+        .footer-links a:hover,
+        .footer-icons a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-icons i {
+            margin-right: 8px;
+            /* Space between icon and text */
+        }
+
+        /* Style the map container */
+        #map {
+            width: 100%;
+            height: 400px;
+        }
+
+        /* Style for the slide content */
+        .slide-content {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Style for the image container */
+        .image-container {
+            flex: 1;
+        }
+
+        /* Style for the text container */
+        .text-container {
+            flex: 1;
+            padding: 0 20px;
+            /* Adjust padding as needed */
+        }
+
+        /* Style for the image */
+        .carousel-slide img {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Style for the text */
+        .text-container h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .text-container p {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+        .welcome-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color:black;
+            opacity: 1; /* Start with opacity 1 */
+            animation: fadeIn 15s forwards;
+            font-size: 50px;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; } /* Hide the welcome message at the end */
+        }
+
+        /* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 9999; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+  
+  /* Modal Content */
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 400px;
+  }
+  
+  /* Close Button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    font-family: 'Courier New', Courier;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  /* Style for Login/Signup buttons */
+  #loginBtn,
+  #signupBtn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color:beige;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    transition: background-color 0.3s;
+  }
+  
+  #loginBtn:hover,
+  #signupBtn:hover {
+    background-color: yellowgreen;
+  }
+
+
+
+  body.dark-theme {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+nav.dark-theme {
+    background-color: #1f1f1f;
+}
+
+.nav-links a.dark-theme {
+    color: #ffffff;
+}
+
+.nav-links a:hover.dark-theme {
+    color: #ffd700; /* Dark mode hover color */
+}
+
+.carousel-slide .text.dark-theme {
+    color: #ffffff;
+}
+
+footer.dark-theme {
+    background-color: #1f1f1f;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.dark-theme {
+    background-color: #222;
+    color: #fff;
+}
+
+.dark-theme nav {
+    background-color: #222;
+}
+
+.dark-theme .nav-links a {
+    color: #fff;
+}
+
+.dark-theme .auth-buttons .login {
+    background-color: #e39414;
+    color: black;
+}
+
+.dark-theme .auth-buttons .login:hover {
+    background-color: #91a09e;
+    border-color: #91a09e;
+}
+
+.dark-theme .carousel-slide .text {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.dark-theme .footer {
+    background-color: #111;
+}
+
+.dark-theme .footer a {
+    color: #bbb;
+}
+
+.dark-theme .footer a:hover {
+    color: #fff;
+}
+
+.dark-theme .dots-container .dot {
+    background-color: #555;
+}
+/* Add the following styles to your existing CSS */
+
+/* Ensure the Change_Me button matches the other nav links */
+.nav-links a#changeColorBtn {
+    padding: 10px;
+    color: black;
+    text-decoration: none;
+    font-size: 16px;
+    display: block;
+    cursor: pointer;
+}
+
+.nav-links a#changeColorBtn:hover {
+    color: rgb(222, 164, 18);
+    /* Match the hover color of other nav links */
+}
+
+/* Adjust Dark Mode styles for Change_Me button */
+.dark-theme .nav-links a#changeColorBtn {
+    color: white;
+}
+
+.dark-theme .nav-links a#changeColorBtn:hover {
+    color: #ffd700; /* Dark mode hover color */
+}
+ 
+
+
+
+</style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="logo_1.png" alt="Logo">
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li class="dropdown">
+                <a href="#">About</a>
+                <ul class="dropdown-content">
+                    <li><a href="#">Academics</a></li>
+                    <li><a href="#">Non-Academics</a></li>
+                    <li><a href="#">Miscellaneous</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Blog</a></li>
+            <li class="dropdown">
+                <a href="#">My Projects</a>
+                <ul class="dropdown-content">
+                    <li><a href="pro1.html">My Project 1</a></li>
+                    <li><a href="pro2.html">My Project 2</a></li>
+                    <li><a href="#">My Project 3</a></li>
+                    <li><a href="#">My Project 4</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="contact.php">Contact</a>
+                <ul class="dropdown-content">
+                    <li><a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+                    <li><a href="#"><i class="fas fa-envelope"></i> Gmail</a></li>
+                    <li><a href="#"><i class="fas fa-phone"></i> Contact No</a></li>
+                    <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                </ul>
+            </li>
+            <li><a href="login.html">Log/Reg</a></li>
+
+
+    
+            <li><a href="#" id="changeColorBtn">Change_Me</a></li> 
+        </ul>
+    </ul>
+    <button id="theme-toggle" class="theme-toggle">Dark Mode</button>
+   
+    </nav>
+
+<!-- Login/Signup Modal -->
+<div id="loginSignupModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Login or Sign Up</h2>
+      <button id="loginBtn">Login</button>
+      <button id="signupBtn">Sign Up</button>
+    </div>
+  </div>
+
+    <div class="welcome-container">
+        <div class="welcome-text">
+            <h2>Welcome to my portfolio.</h2>
+            <p>I am glad you are here.</p>
+        </div>
+    </div>
+
+    <div class="carousel">
+        <div class="dots-container">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+
+        <div class="carousel-slide fade cyber-security-slide">
+            <div class="slide-content">
+                <div class="image-container">
+                    <img src="main_1.jpg" alt="Cyber Security Image">
+                </div>
+                <div class="text-container">
+                    <h1>Cyber Security</h1>
+                    <p>Equipped with in-depth knowledge and hands-on experience in protecting digital assets from evolving threats, ensuring data integrity and confidentiality.</p>
+                    <button class="hire-me-btn">Hire Me</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add more slides similarly -->
+        <div class="carousel-slide fade">
+            <div class="slide-content">
+                <div class="image-container">
+                    <img src="main_2.webp" alt="Network Security Image">
+                </div>
+                <div class="text-container">
+                    <h1>Network Security</h1>
+                    <p>Skilled in securing network infrastructure, preventing unauthorized access, and ensuring data integrity and confidentiality.</p>
+                    <button class="hire-me-btn">Hire Me</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="carousel-slide fade">
+            <div class="slide-content">
+                <div class="image-container">
+                    <img src="main_3.png" alt="Cloud Computing Image">
+                </div>
+                <div class="text-container">
+                    <h1>Cloud Computing</h1>
+                    <p>Experienced in leveraging cloud platforms to optimize performance, ensure data security, and manage scalable solutions.</p>
+                    <button class="hire-me-btn">Hire Me</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <ul class="footer-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">My Projects</a></li>
+            </ul>
+            <ul class="footer-icons">
+                <li><a href="https://www.linkedin.com" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+                <li><a href="mailto:your-email@example.com"><i class="fas fa-envelope"></i> Gmail</a></li>
+                <li><a href="tel:+1234567890"><i class="fas fa-phone"></i> Contact No</a></li>
+                <li><a href="https://www.instagram.com" target="_blank
+                <li><a href="https://www.instagram.com" target="_blank"><i class="fab fa-instagram"></i> Instagram</a></li>
+            </ul>
+        </div>
+        <div id="map"></div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var welcomeContainer = document.querySelector(".welcome-container");
+    
+            setTimeout(function() {
+                welcomeContainer.style.animation = "fadeIn 10s forwards";
+                document.body.style.visibility = "visible";
+            }, 5000);
+        });
+    
+        // Carousel functionality
+        let slideIndex = 0;
+        showSlides();
+    
+        function showSlides() {
+            let slides = document.getElementsByClassName("carousel-slide");
+            let dots = document.getElementsByClassName("dot");
+    
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+    
+            slideIndex++;
+            if (slideIndex > slides.length) { slideIndex = 1 }
+    
+            for (let i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+    
+            slides[slideIndex - 1].style.display = "block";
+            dots[slideIndex - 1].className += " active";
+    
+            setTimeout(showSlides, 2000);
+        }
+    
+        function currentSlide(n) {
+            slideIndex = n;
+            showSlides();
+        }
+    
+        // Initialize the map centered around Singtam Santinagar, Sikkim
+        document.addEventListener('DOMContentLoaded', (event) => {
+            if (document.getElementById('map')) {
+                var map = L.map('map').setView([27.2417, 88.5059], 13);
+    
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+    
+                L.marker([27.2417, 88.5059]).addTo(map)
+                    .bindPopup('Singtam sangkhola, Sikkim, India')
+                    .openPopup();
+            }
+        });
+    
+        // Disable right click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+    
+        // Modal functionality
+        const modal = document.getElementById('loginSignupModal');
+        const closeBtn = document.querySelector('.close');
+    
+        function displayModal() {
+            modal.style.display = 'block';
+        }
+    
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    
+        window.addEventListener('load', displayModal);
+    
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const themeToggleButton = document.getElementById('theme-toggle');
+            const body = document.body;
+            const nav = document.querySelector('nav');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            const footer = document.querySelector('footer');
+            const carouselText = document.querySelectorAll('.carousel-slide .text');
+    
+            themeToggleButton.addEventListener('click', () => {
+                body.classList.toggle('dark-theme');
+                nav.classList.toggle('dark-theme');
+                footer.classList.toggle('dark-theme');
+    
+                navLinks.forEach(link => {
+                    link.classList.toggle('dark-theme');
+                });
+    
+                carouselText.forEach(text => {
+                    text.classList.toggle('dark-theme');
+                });
+    
+                if (themeToggleButton.textContent === "Dark Mode") {
+                    themeToggleButton.textContent = "Light Mode";
+                } else {
+                    themeToggleButton.textContent = "Dark Mode";
+                }
+            });
+        });
+    
+        // Change text color functionality
+        function changeTextColor() {
+            const textElements = document.querySelectorAll('.text-container h1, .text-container p');
+            textElements.forEach(element => {
+                element.style.color = getRandomColor();
+            });
+        }
+    
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+    
+        document.getElementById('changeColorBtn').addEventListener('click', changeTextColor);
+    </script>
+    
+
+</body>
+</html>
+       
+        
+    
+    
+    
